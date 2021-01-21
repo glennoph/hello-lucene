@@ -25,9 +25,11 @@ public class HelloLucene {
         // 0. Specify the analyzer for tokenizing text.
         //    The same analyzer should be used for indexing and searching
         StandardAnalyzer analyzer = new StandardAnalyzer();
+        System.out.println("A. create analyzer="+ analyzer.toString());
 
         // 1. create the index
         Directory index = new RAMDirectory();
+        System.out.println("B. create index="+index.toString());
 
         IndexWriterConfig config = new IndexWriterConfig(analyzer);
 
@@ -40,6 +42,7 @@ public class HelloLucene {
 
         // 2. query
         String queryString = args.length > 0 ? args[0] : "lucene";
+        System.out.println("D. create query string: "+ queryString);
 
         // the "title" arg specifies the default field to use
         // when no field is explicitly specified in the query.
@@ -50,6 +53,8 @@ public class HelloLucene {
         } catch (org.apache.lucene.queryparser.classic.ParseException e) {
             e.printStackTrace();
         }
+        System.out.println("E. specify fields \"title\" in query:"+query.toString());
+
 
         // 3. search
         int hitsPerPage = 10;
@@ -58,9 +63,10 @@ public class HelloLucene {
         TopScoreDocCollector collector = TopScoreDocCollector.create(hitsPerPage);
         searcher.search(query, collector);
         ScoreDoc[] hits = collector.topDocs().scoreDocs;
+        System.out.println("F. execute search searcher:"+searcher.toString());
 
         // 4. display results
-        System.out.println("Found " + hits.length + " hits.");
+        System.out.println("F. Found " + hits.length + " hits. (below) \n");
         for (int i = 0; i < hits.length; ++i) {
             int docId = hits[i].doc;
             Document d = searcher.doc(docId);
@@ -79,5 +85,6 @@ public class HelloLucene {
         // use a string field for isbn because we don't want it tokenized
         doc.add(new StringField("isbn", isbn, Field.Store.YES));
         w.addDocument(doc);
+        System.out.println("C. add document doc="+doc);
     }
 }
